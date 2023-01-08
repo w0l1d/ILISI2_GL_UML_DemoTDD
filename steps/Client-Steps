@@ -1,0 +1,32 @@
+
+ ******************************
+      Client class
+ ******************************
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    @Entity
+    public class Client {
+       @Id
+       private UUID uuid;
+       private String nom;
+       private String phone;
+       private String email;
+
+    }
+
+
+ ***********************************************
+      Client class with Jakarta Validation
+ ***********************************************
+
+    @Id
+    private UUID uuid;
+    @Length(min = 4)
+    private String nom;
+    @Pattern(message = "phone must begin with +212 or 0", regexp = "((\"+212\")|(0))[0-9]{9}")
+    private String phone;
+    @Email
+    private String email;
+
+

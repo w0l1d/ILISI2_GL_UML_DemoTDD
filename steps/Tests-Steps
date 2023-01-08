@@ -1,0 +1,106 @@
+
+ ******************************
+           Valid Test
+ ******************************
+ @Test
+   @DisplayName("Save a valid Client")
+   public void saveNewClient() {
+      Client client = new Client(null, "walid", "0612345678", "valid@mail.com");
+      Client savedCli = clientController.ajouterClient(client).orElse(null);
+      Assertions.assertNotNull(savedCli);
+      Assertions.assertNotNull(savedCli.getUuid());
+   }
+
+
+
+
+
+
+
+
+
+ ******************************
+       Invalid phone Test
+ ******************************
+
+
+ @Test
+   @DisplayName("save a new client with invalid phone")
+   public void saveNewClientWithInvalidPhone() {
+      Client client = new Client(null, "walid", "12345678", "valid@mail.com");
+
+      Assertions.assertThrows(IllegalArgumentException.class,
+              () -> clientController.ajouterClient(client),
+              "email invalid : " + client.getEmail());
+   }
+
+   @Test
+   @DisplayName("save a new client with invalid phone")
+   public void saveNewClientWithInvalidPhone() {
+      Client client = new Client(null, "walid", "12345678", "valid@mail.com");
+
+      Assertions.assertThrows(TransactionSystemException.class,
+              () -> clientController.ajouterClient(client),
+              "phone must begin with +212 or 0");
+   }
+
+ ******************************
+       Invalid email Test
+ ******************************
+    @Test
+    @DisplayName("save a new client with invalid email")
+    public void saveNewClientWithInvalidEmail() {
+       Client client = new Client(null, "walid", "0612345678", "email1.com");
+
+       Assertions.assertThrows(IllegalArgumentException.class,
+               () -> clientController.ajouterClient(client),
+               "email invalid : " + client.getEmail());
+    }
+
+
+ @Test
+    @DisplayName("save a new client with invalid email")
+    public void saveNewClientWithInvalidEmail() {
+       Client client = new Client(null, "walid", "0612345678", "email1.com");
+
+       Assertions.assertThrows(TransactionSystemException.class,
+               () -> clientController.ajouterClient(client),
+               "must be a well-formed email address");
+    }
+
+
+
+
+********************************
+        Integration tests
+********************************
+@Test
+   @DisplayName("Integration Test : test posting a valid client")
+   public void greetingShouldReturnDefaultMessage() throws Exception {
+      Client client = new Client(null, "walid", "0634567895", "mail@mail.com");
+      HttpEntity<Client> clientHttpEntity = new HttpEntity<>(client);
+
+      ResponseEntity<Client> response = this.restTemplate
+                      .postForEntity("http://localhost:" + port + "/api/clients/",
+                              clientHttpEntity,
+                              Client.class);
+      assertEquals(response.getStatusCode(), HttpStatusCode.valueOf(200));
+   }
+
+   @Test
+      @DisplayName("Integration Test : test posting a valid client")
+      public void clientShouldBeSavedSuccessfully() {
+         Client client = new Client(null, "walid", "1634567895", "mail@mail.com");
+         HttpEntity<Client> clientHttpEntity = new HttpEntity<>(client);
+
+         ResponseEntity<Client> response = this.restTemplate
+                 .postForEntity("http://localhost:" + port + "/api/clients/",
+                         clientHttpEntity,
+                         Client.class);
+
+         assertAll(
+                 () -> assertEquals(response.getStatusCode(), HttpStatusCode.valueOf(201)),
+                 () -> assertNotNull(response.getBody()),
+                 () -> assertNotNull(response.getBody().getUuid())
+         );
+      }
