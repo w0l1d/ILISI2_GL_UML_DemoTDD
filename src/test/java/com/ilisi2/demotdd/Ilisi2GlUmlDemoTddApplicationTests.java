@@ -20,7 +20,6 @@ class Ilisi2GlUmlDemoTddApplicationTests {
    private int port;
    @Autowired
    private TestRestTemplate restTemplate;
-
    @Test
    void contextLoads() {
    }
