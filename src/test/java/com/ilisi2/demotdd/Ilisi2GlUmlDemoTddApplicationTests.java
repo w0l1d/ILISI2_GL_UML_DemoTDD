@@ -25,5 +25,21 @@ class Ilisi2GlUmlDemoTddApplicationTests {
    void contextLoads() {
    }
 
+   @Test
+   @DisplayName("Integration Test : test posting a valid client")
+   public void clientShouldBeSavedSuccessfully() {
+      Client client = new Client(null, "walid", "0634567895", "mail@mail.com");
+      HttpEntity<Client> clientHttpEntity = new HttpEntity<>(client);
 
+      ResponseEntity<Client> response = this.restTemplate
+              .postForEntity("http://localhost:" + port + "/api/clients/",
+                      clientHttpEntity,
+                      Client.class);
+
+      assertAll(
+              () -> assertEquals(response.getStatusCode(), HttpStatusCode.valueOf(201)),
+              () -> assertNotNull(response.getBody()),
+              () -> assertNotNull(response.getBody().getUuid())
+      );
+   }
 }
